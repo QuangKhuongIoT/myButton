@@ -64,6 +64,14 @@ void myButtonClass::attachDepress(v_callbackFunctionv newFunction) {
     _ptrDepressFunc = newFunction;
 }
 
+void myButtonClass::attachMultiClick(v_callbackFunctionv newFunction) {
+    _ptrMultiClickFunc = newFunction;
+}
+
+int myButtonClass::getLastMultiClickCounter() {
+    return _lastMultiClickCounter;
+}
+
 bool myButtonClass::getInputStatus() {
     return _state;
 }
@@ -87,7 +95,8 @@ void myButtonClass::tick() {
                     _btnLastState = _state;
                     _multiClickCounter++;
                     if (_multiClickCounter == 1) _btnCommand = BTN_STT_CLICK;
-                    if (_multiClickCounter > 1) _btnCommand = BTN_STT_DOUBLE_CLICK;
+                    if (_multiClickCounter == 2) _btnCommand = BTN_STT_DOUBLE_CLICK;
+                    if (_multiClickCounter > 2) _btnCommand = BTN_STT_MULTI_CLICK;
                 } else {
                     if (!(_multiClickCounter > 1)) {
                         if ((_actionTime > _pressTime) && (_actionTime < _longPressTime)) {
@@ -103,6 +112,7 @@ void myButtonClass::tick() {
             if (_actionTime > _debounceTime) {
                 _btnLastState = _state;
                 if (_actionTime > _endActionTime) {
+                    _lastMultiClickCounter = _multiClickCounter;
                     _multiClickCounter = 0;
                     if (_btnCommand != BTN_STT_LONG_PRESS) {
                         switch (_btnCommand) {
@@ -116,6 +126,10 @@ void myButtonClass::tick() {
                             }
                             case BTN_STT_PRESS: {
                                 if (_ptrPressFunc) _ptrPressFunc();
+                                break;
+                            }
+                            case BTN_STT_MULTI_CLICK: {
+                                if (_ptrMultiClickFunc) _ptrMultiClickFunc();
                                 break;
                             }
 

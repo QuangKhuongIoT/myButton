@@ -1,17 +1,20 @@
 #include "main.h"
 
 myButtonClass btn;
+int counter;
 
 void buttonInit();
 bool getPinStatus();
 unsigned long getCurrentTickMs();
 void buttonClickHandler();
 void buttonDoubleClickHandler();
+void buttonMultiClickHandler();
 void buttonPressHandler();
 void buttonLongPressHandler();
 void buttonDepressHandler();
 
 void setup() {
+    counter = 0;
     Serial.begin(115200);
     while (millis() < 2000) {
     }
@@ -22,6 +25,7 @@ void setup() {
     }
     btn.attachClick(buttonClickHandler);
     btn.attachDoubleClick(buttonDoubleClickHandler);
+    btn.attachMultiClick(buttonMultiClickHandler);
     btn.attachPress(buttonPressHandler);
     btn.attachLongPress(buttonLongPressHandler);
     btn.attachDepress(buttonDepressHandler);
@@ -45,21 +49,25 @@ unsigned long getCurrentTickMs() {
 }
 
 void buttonClickHandler() {
-    Serial.print("Button clicked.\n");
+    Serial.printf("Button clicked.\n");
 }
 
 void buttonDoubleClickHandler() {
-    Serial.print("Button Double Clicked.\n");
+    Serial.printf("Button Double Clicked.\n");
+}
+
+void buttonMultiClickHandler() {
+    Serial.printf("Button Clicked %i times.\n", btn.getLastMultiClickCounter());
 }
 
 void buttonPressHandler() {
-    Serial.print("Button Pressed.\n");
+    Serial.printf("Button Pressed.\n");
 }
 
 void buttonLongPressHandler() {
-    Serial.print("Button Long Pressed.\n");
+    Serial.printf("Button Long Pressed.\n");
 }
 
 void buttonDepressHandler() {
-    Serial.print("Button Depressed.\n");
+    Serial.printf("Button Depressed.\n");
 }

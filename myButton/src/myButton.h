@@ -3,7 +3,7 @@
 
 extern "C" {
 typedef void (*v_callbackFunctionv)(void);
-typedef void (*v_callbackFunctionInt)(int);
+typedef void (*v_callbackFunctionInt)(int *);
 typedef unsigned long (*ul_callbackFunctionv)(void);
 typedef bool (*b_callbackFunctionv)(void);
 }
@@ -12,6 +12,7 @@ typedef enum {
     BTN_STT_UNKNOWN = 0,
     BTN_STT_CLICK,
     BTN_STT_DOUBLE_CLICK,
+    BTN_STT_MULTI_CLICK,
     BTN_STT_PRESS,
     BTN_STT_LONG_PRESS,
     BTN_STT_DEPRESS
@@ -28,11 +29,11 @@ class myButtonClass {
     v_callbackFunctionv _ptrPressFunc = 0;
     v_callbackFunctionv _ptrLongPressFunc = 0;
     v_callbackFunctionv _ptrDepressFunc = 0;
+    v_callbackFunctionv _ptrMultiClickFunc = 0;
 
     unsigned long _timeActive, _timeDeactive;
-    unsigned long _multiClickCounter;
     unsigned long _startTime, _actionTime;
-    int _pin;
+    int _pin, _multiClickCounter = 0, _lastMultiClickCounter = 0;
     unsigned int _debounceTime = 50, _endActionTime = 600, _clickTime = 400, _pressTime = 1000, _longPressTime = 5000;
     bool _state, _lastState, _activeLevel, _initSuccessFlag;
     bool _btnLastState = 0;
@@ -54,6 +55,8 @@ class myButtonClass {
     void attachPress(v_callbackFunctionv newFunction);
     void attachLongPress(v_callbackFunctionv newFunction);
     void attachDepress(v_callbackFunctionv newFunction);
+    void attachMultiClick(v_callbackFunctionv newFunction);
+    int getLastMultiClickCounter();
     bool getInputStatus();
     unsigned long getActionTimeMs();
 };
