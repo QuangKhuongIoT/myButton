@@ -33,9 +33,10 @@ class myButtonClass {
     unsigned long _timeMutilClickCount;
     unsigned long _startTime;
     int _pin;
-    unsigned int _debounceTime = 50, _clickTime = 400, _pressTime = 1000, _longPressTime = 5000;
+    unsigned int _debounceTime = 50, _endActionTime = 600, _clickTime = 400, _pressTime = 1000, _longPressTime = 5000;
     bool _state, _lastState, _activeLevel, _initSuccessFlag;
-    button_state_t _btnState = BTN_STT_UNKNOWN, _btnLastState = BTN_STT_UNKNOWN;
+    bool _btnLastState = 0;
+    button_state_t _btnCommand = BTN_STT_UNKNOWN;
 
    public:
     myButtonClass();

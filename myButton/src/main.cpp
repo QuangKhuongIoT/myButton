@@ -6,6 +6,7 @@ void buttonInit();
 bool getPinStatus();
 unsigned long getCurrentTickMs();
 void buttonClickHandler();
+void buttonDoubleClickHandler();
 void buttonPressHandler();
 void buttonLongPressHandler();
 void buttonDepressHandler();
@@ -16,8 +17,11 @@ void setup() {
     }
     Serial.printf("\nMy ButtonClass.\n");
 
-    btn.config(df_BTN_PIN, false, buttonInit, getPinStatus, getCurrentTickMs);
+    if (!btn.config(df_BTN_PIN, false, buttonInit, getPinStatus, getCurrentTickMs)) {
+        Serial.printf("Config button failed.\n");
+    }
     btn.attachClick(buttonClickHandler);
+    btn.attachDoubleClick(buttonDoubleClickHandler);
     btn.attachPress(buttonPressHandler);
     btn.attachLongPress(buttonLongPressHandler);
     btn.attachDepress(buttonDepressHandler);
@@ -25,9 +29,7 @@ void setup() {
 }
 
 void loop() {
-    // put your main code here, to run repeatedly:
     btn.tick();
-    // delay(1000);
 }
 
 void buttonInit() {
@@ -44,6 +46,10 @@ unsigned long getCurrentTickMs() {
 
 void buttonClickHandler() {
     Serial.print("Button clicked.\n");
+}
+
+void buttonDoubleClickHandler() {
+    Serial.print("Button Double Clicked.\n");
 }
 
 void buttonPressHandler() {

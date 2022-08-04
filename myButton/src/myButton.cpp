@@ -63,50 +63,61 @@ void myButtonClass::attachLongPress(v_callbackFunctionv newFunction) {
 void myButtonClass::attachDepress(v_callbackFunctionv newFunction) {
     _ptrDepressFunc = newFunction;
 }
-
 void myButtonClass::tick() {
+    unsigned long timeAction;
     if (_initSuccessFlag) {
         _state = _ptrGetPinStatusFunc();
-        if (_state != _lastState) {
+        if (_lastState != _state) {
             _lastState = _state;
             _startTime = _ptrGetCurrentTimeMsFunc();
-        } else {
-            unsigned long timeActionMs = _ptrGetCurrentTimeMsFunc() - _startTime;
-            if (_state == _activeLevel) {
-                if ((timeActionMs > _debounceTime) && (timeActionMs < _pressTime)) _btnState = BTN_STT_CLICK;
-                if ((timeActionMs > _pressTime) && (timeActionMs < _longPressTime)) {
-                    _btnState = BTN_STT_PRESS;
-                }
-                if ((timeActionMs > _longPressTime) && (_btnLastState != BTN_STT_LONG_PRESS)) {
-                    _btnState = BTN_STT_LONG_PRESS;
-                    if (_ptrLongPressFunc) _ptrLongPressFunc();
-                }
-                _btnLastState = _btnState;
-            } else {
-                if ((timeActionMs > _debounceTime) && (_btnState != BTN_STT_UNKNOWN)) {
-                    switch (_btnState) {
-                        case BTN_STT_CLICK: {
-                            if (_ptrClickFunc) _ptrClickFunc();
-                            break;
-                        }
-                        case BTN_STT_DOUBLE_CLICK: {
-                            break;
-                        }
-                        case BTN_STT_PRESS: {
-                            if (_ptrPressFunc) _ptrPressFunc();
-                            break;
-                        }
-                        case BTN_STT_LONG_PRESS: {
-                            if (_ptrDepressFunc) _ptrDepressFunc();
-                            break;
-                        }
+        }
+        timeAction = _ptrGetCurrentTimeMsFunc() - _startTime;
 
-                        default: {
-                            break;
+        if (_state == _activeLevel) {
+            if (timeAction > _debounceTime) {
+                if (_btnLastState != _state) {
+                    _btnLastState = _state;
+                    _timeMutilClickCount++;
+                    if (_timeMutilClickCount == 1) _btnCommand = BTN_STT_CLICK;
+                    if (_timeMutilClickCount > 1) _btnCommand = BTN_STT_DOUBLE_CLICK;
+                } else {
+                    if (_timeMutilClickCount == 1) {
+                        if ((timeAction > _pressTime) && (timeAction < _longPressTime)) {
+                            _btnCommand = BTN_STT_PRESS;
+                        } else if ((timeAction > _longPressTime) && (_btnCommand != BTN_STT_LONG_PRESS)) {
+                            _btnCommand = BTN_STT_LONG_PRESS;
+                            if (_ptrLongPressFunc) _ptrLongPressFunc();
                         }
                     }
+                }
+            }
+        } else {
+            if (timeAction > _debounceTime) {
+                _btnLastState = _state;
+                if (timeAction > _endActionTime) {
+                    _timeMutilClickCount = 0;
+                    if (_btnCommand != BTN_STT_LONG_PRESS) {
+                        switch (_btnCommand) {
+                            case BTN_STT_CLICK: {
+                                if (_ptrClickFunc) _ptrClickFunc();
+                                break;
+                            }
+                            case BTN_STT_DOUBLE_CLICK: {
+                                if (_ptrDoubleClickFunc) _ptrDoubleClickFunc();
+                                break;
+                            }
+                            case BTN_STT_PRESS: {
+                                if (_ptrPressFunc) _ptrPressFunc();
+                                break;
+                            }
 
-                    _btnState = BTN_STT_UNKNOWN;
+                            default:
+                                break;
+                        }
+                    } else {
+                        if (_ptrDepressFunc) _ptrDepressFunc();
+                    }
+                    _btnCommand = BTN_STT_UNKNOWN;
                 }
             }
         }
