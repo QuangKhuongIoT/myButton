@@ -31,7 +31,7 @@ class myButtonClass {
 
     unsigned long _timeActive, _timeDeactive;
     unsigned long _multiClickCounter;
-    unsigned long _startTime;
+    unsigned long _startTime, _actionTime;
     int _pin;
     unsigned int _debounceTime = 50, _endActionTime = 600, _clickTime = 400, _pressTime = 1000, _longPressTime = 5000;
     bool _state, _lastState, _activeLevel, _initSuccessFlag;
@@ -55,6 +55,7 @@ class myButtonClass {
     void attachLongPress(v_callbackFunctionv newFunction);
     void attachDepress(v_callbackFunctionv newFunction);
     bool getInputStatus();
+    unsigned long getActionTimeMs();
 };
 
 #endif

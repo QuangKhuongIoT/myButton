@@ -68,18 +68,21 @@ bool myButtonClass::getInputStatus() {
     return _state;
 }
 
+unsigned long myButtonClass::getActionTimeMs() {
+    return _actionTime;
+}
+
 void myButtonClass::tick() {
-    unsigned long timeAction;
     if (_initSuccessFlag) {
         _state = _ptrGetPinStatusFunc();
         if (_lastState != _state) {
             _lastState = _state;
             _startTime = _ptrGetCurrentTimeMsFunc();
         }
-        timeAction = _ptrGetCurrentTimeMsFunc() - _startTime;
+        _actionTime = _ptrGetCurrentTimeMsFunc() - _startTime;
 
         if (_state == _activeLevel) {
-            if (timeAction > _debounceTime) {
+            if (_actionTime > _debounceTime) {
                 if (_btnLastState != _state) {
                     _btnLastState = _state;
                     _multiClickCounter++;
@@ -87,9 +90,9 @@ void myButtonClass::tick() {
                     if (_multiClickCounter > 1) _btnCommand = BTN_STT_DOUBLE_CLICK;
                 } else {
                     if (!(_multiClickCounter > 1)) {
-                        if ((timeAction > _pressTime) && (timeAction < _longPressTime)) {
+                        if ((_actionTime > _pressTime) && (_actionTime < _longPressTime)) {
                             _btnCommand = BTN_STT_PRESS;
-                        } else if ((timeAction > _longPressTime) && (_btnCommand != BTN_STT_LONG_PRESS)) {
+                        } else if ((_actionTime > _longPressTime) && (_btnCommand != BTN_STT_LONG_PRESS)) {
                             _btnCommand = BTN_STT_LONG_PRESS;
                             if (_ptrLongPressFunc) _ptrLongPressFunc();
                         }
@@ -97,9 +100,9 @@ void myButtonClass::tick() {
                 }
             }
         } else {
-            if (timeAction > _debounceTime) {
+            if (_actionTime > _debounceTime) {
                 _btnLastState = _state;
-                if (timeAction > _endActionTime) {
+                if (_actionTime > _endActionTime) {
                     _multiClickCounter = 0;
                     if (_btnCommand != BTN_STT_LONG_PRESS) {
                         switch (_btnCommand) {
