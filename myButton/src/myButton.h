@@ -30,7 +30,7 @@ class myButtonClass {
     v_callbackFunctionv _ptrDepressFunc = 0;
 
     unsigned long _timeActive, _timeDeactive;
-    unsigned long _timeMutilClickCount;
+    unsigned long _multiClickCounter;
     unsigned long _startTime;
     int _pin;
     unsigned int _debounceTime = 50, _endActionTime = 600, _clickTime = 400, _pressTime = 1000, _longPressTime = 5000;

@@ -77,11 +77,11 @@ void myButtonClass::tick() {
             if (timeAction > _debounceTime) {
                 if (_btnLastState != _state) {
                     _btnLastState = _state;
-                    _timeMutilClickCount++;
-                    if (_timeMutilClickCount == 1) _btnCommand = BTN_STT_CLICK;
-                    if (_timeMutilClickCount > 1) _btnCommand = BTN_STT_DOUBLE_CLICK;
+                    _multiClickCounter++;
+                    if (_multiClickCounter == 1) _btnCommand = BTN_STT_CLICK;
+                    if (_multiClickCounter > 1) _btnCommand = BTN_STT_DOUBLE_CLICK;
                 } else {
-                    if (_timeMutilClickCount == 1) {
+                    if (!(_multiClickCounter > 1)) {
                         if ((timeAction > _pressTime) && (timeAction < _longPressTime)) {
                             _btnCommand = BTN_STT_PRESS;
                         } else if ((timeAction > _longPressTime) && (_btnCommand != BTN_STT_LONG_PRESS)) {
@@ -95,7 +95,7 @@ void myButtonClass::tick() {
             if (timeAction > _debounceTime) {
                 _btnLastState = _state;
                 if (timeAction > _endActionTime) {
-                    _timeMutilClickCount = 0;
+                    _multiClickCounter = 0;
                     if (_btnCommand != BTN_STT_LONG_PRESS) {
                         switch (_btnCommand) {
                             case BTN_STT_CLICK: {
