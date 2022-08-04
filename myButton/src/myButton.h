@@ -54,6 +54,7 @@ class myButtonClass {
     void attachPress(v_callbackFunctionv newFunction);
     void attachLongPress(v_callbackFunctionv newFunction);
     void attachDepress(v_callbackFunctionv newFunction);
+    bool getInputStatus();
 };
 
 #endif

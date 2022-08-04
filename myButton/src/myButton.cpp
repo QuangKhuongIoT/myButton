@@ -63,6 +63,11 @@ void myButtonClass::attachLongPress(v_callbackFunctionv newFunction) {
 void myButtonClass::attachDepress(v_callbackFunctionv newFunction) {
     _ptrDepressFunc = newFunction;
 }
+
+bool myButtonClass::getInputStatus() {
+    return _state;
+}
+
 void myButtonClass::tick() {
     unsigned long timeAction;
     if (_initSuccessFlag) {
